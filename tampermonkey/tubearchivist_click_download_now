@@ -1,0 +1,43 @@
+// ==UserScript==
+// @name         TubeArchivist - Click All Download Now
+// @namespace
+// @version      0.1
+// @description  Manually trigger clicking "Download Now" for all downloads on Page
+// @author       SamSausage
+// @match        https://tube.saraschfamily.com/downloads/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // Create a button to trigger the script
+    var triggerButton = document.createElement('button');
+    triggerButton.textContent = 'Click All Download Now';
+    triggerButton.style = "position: fixed; top: 10px; right: 10px; z-index: 1000;";
+    triggerButton.onclick = runRequeue;
+    document.body.appendChild(triggerButton);
+
+    function runRequeue() {
+        var buttons = document.querySelectorAll('button');
+        buttons.forEach(function(button) {
+            if (button.textContent === "Download now" && isElementVisible(button)) {
+                button.click();
+                // Wait for a moment before clicking the next button to avoid overloading
+                setTimeout(() => {}, 500); // Half a second delay between clicks
+            }
+        });
+    }
+
+    // Function to check if an element is visible
+    function isElementVisible(elem) {
+        const style = window.getComputedStyle(elem);
+        if (style.display === 'none') return false;
+        if (style.visibility !== 'visible') return false;
+        if (elem.offsetWidth + elem.offsetHeight + elem.getBoundingClientRect().height +
+            elem.getBoundingClientRect().width === 0) {
+            return false;
+        }
+        return true;
+    }
+})();
